@@ -63,11 +63,13 @@ class Dot {
 
 
 	update() {
-		this.x = mouseX;
-		this.y = mouseY;
-		this.realx = this.x - offsetx;
-		this.realy = this.y - offsety;
-		updatePlayer(this, currentKey);
+		let t = Object.assign({}, this)
+		t.x = mouseX;
+		t.y = mouseY;
+		t.realx = this.x - offsetx;
+		t.realy = this.y - offsety;
+		
+		updatePlayer(t, currentKey);
 	}
 
 	drawReal() {
