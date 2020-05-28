@@ -51,12 +51,13 @@ class Dot {
 			let d = dist(prey.x + offsetx, prey.y + offsety, this.x, this.y)
 			if (d <= this.radius / 2) {
 				// this.radius += 10;
-				let t = Object.assign(t, this)
+				let t = Object.assign({}, this)
 				t.radius += 10
 				console.log("collided")
 				let i = food.indexOf(prey);
 				food.splice(i, 1);
 				this.score += 1;
+				console.log(currentKey)
 				updatePlayer(t, currentKey)
 				sendFoodEaten(i);
 				// food.splice(i,1)
