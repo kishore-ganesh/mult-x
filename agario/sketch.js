@@ -195,16 +195,16 @@ function draw() {
 
 		if (players[currentKey]) {
 			if (players[currentKey].x + players[currentKey].radius / 2 >= windowWidth - 200) {
-				offsetx--;
+				offsetx-=5;
 			}
 			if (players[currentKey].x - players[currentKey].radius / 2 <= 200) {
-				offsetx++;
+				offsetx+=5;
 			}
 			if (players[currentKey].y + players[currentKey].radius / 2 >= windowHeight - 200) {
-				offsety--;
+				offsety-=5;
 			}
 			if (players[currentKey].y - players[currentKey].radius / 2 <= 200) {
-				offsety++;
+				offsety+=5;
 			}
 		}
 	}
