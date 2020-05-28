@@ -53,6 +53,7 @@ class Dot {
 				this.radius += 10;
 				console.log("collided")
 				let i = food.indexOf(prey);
+				food.splice(i, 1);
 				this.score += 1;
 				sendFoodEaten(i);
 				// food.splice(i,1)
