@@ -1,9 +1,11 @@
+
+
 var socket = io();
 
 
 socket.on("players", data => {
 
-
+    console.log(players)
     players={};
     for (let i in data.players) {
 
@@ -19,8 +21,15 @@ socket.on("players", data => {
       players[i].life=data.players[i].life;
     }
   }
+  console.log(currentKey)
   if (currentKey == undefined) {
     currentKey = socket.id;
+    dot.x = random(windowWidth/3, 2*windowWidth/3)
+    dot.y = random(windowHeight/3, 2*windowHeight/3)
+    dot.realx = dot.x 
+    dot.realy = dot.y
+    console.log(dot.x)
+    console.log(dot.y)
     sendPlayer(dot);
 }
 });
@@ -57,6 +66,13 @@ function sendPlayer(dot) {
   });
 }
 
+function respawnPlayer(){
+  key = currentKey
+  currentKey = undefined
+  socket.emit("respawn", {key})
+  
+}
+
 function updatePlayer(player,key) {
   socket.emit("update", {
     key: key,
@@ -81,3 +97,4 @@ socket.on("playerUpdated", data => {
   players[data.key].realy = data.value.realy;
   players[data.key].life=data.value.life;
 });
+

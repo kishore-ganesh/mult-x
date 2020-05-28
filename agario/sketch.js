@@ -3,6 +3,7 @@ class Dot {
 		this.x = x;
 		this.y = y;
 		this.life = 1;
+		this.score = 0;
 
 		if (realx == undefined) {
 			this.realx = this.x - offsetx;
@@ -52,6 +53,7 @@ class Dot {
 				this.radius += 10;
 				console.log("collided")
 				let i = food.indexOf(prey);
+				this.score += 1;
 				sendFoodEaten(i);
 				// food.splice(i,1)
 
@@ -112,8 +114,9 @@ function preload(){
 }
 function setup() {
 	createCanvas(windowWidth, windowHeight);
+	// console.log(txtFont);
 	textFont(txtFont)
-	textSize(width/3)
+	textSize(width/3);
 	textAlign(CENTER, CENTER)
 	//console.log(windowWidth)
 	// food = [];
@@ -124,21 +127,33 @@ function setup() {
 	// console.log(dot);
 
 	// sendPlayer(dot);
-	console.log(currentKey);
+	// console.log(currentKey);
 
 }
 
 function drawGameOver(){
+	textSize(100)
+	fill(0,255,255)
+	text('Game Over - Press R ', windowWidth/2,windowHeight/2);
+	// textSize()
+}
 
+function keyPressed(){
+	if(key=='r'||key=='R'){
+		// currentKey = undefined;
+		respawnPlayer();
+		gameState = 1;
+	}
 }
 
 
 function draw() {
 	background(255);
-	text('TEST ', 0, 0);
-	if (gameState == 1) {
-
-	}
+	// gameState = 2;
+	// console.log(height)
+	// console.log(windowHeight)
+	
+	
 	// frameRate(1);
 	for (let i = 0; i < food.length; i++) {
 		food[i].draw();
@@ -162,6 +177,10 @@ function draw() {
 	}
 	if (gameState == 1) {
 		if (players[currentKey] != undefined) {
+			
+			if(players[currentKey].life!=1){
+				gameState = 2;
+			}
 			players[currentKey].draw();
 			players[currentKey].update();
 		}

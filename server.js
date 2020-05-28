@@ -105,7 +105,14 @@ io.on('connection', (socket)=>{
         })
     })
 
-
+    socket.on("respawn", data => {
+        console.log("RESPAWN CALLED") 
+        delete players[data.key]
+         socket.emit("players", {
+             players,
+             playerCount
+         })
+    })
 
     socket.on('disconnect', ()=>{
 
@@ -128,5 +135,5 @@ io.on('connection', (socket)=>{
 
 })
 
-server.listen(4000);
+server.listen(process.env.PORT || 4000);
 
