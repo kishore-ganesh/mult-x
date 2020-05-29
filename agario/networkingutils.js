@@ -5,7 +5,7 @@ var socket = io();
 
 socket.on("players", data => {
 
-    console.log(players)
+    // console.log(players)
     players={};
     for (let i in data.players) {
 
@@ -16,12 +16,13 @@ socket.on("players", data => {
         data.players[i].y,
         data.players[i].radius,
         data.players[i].realx,
-        data.players[i].realy
+        data.players[i].realy,
+        data.players[i].name
       );
       players[i].life=data.players[i].life;
     }
   }
-  console.log(currentKey)
+  // console.log(currentKey)
   if (currentKey == undefined) {
     
 }

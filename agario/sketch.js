@@ -78,8 +78,17 @@ class Dot {
 		updatePlayer(t, currentKey);
 	}
 
+	drawName(drawx, drawy){
+			fill(0,0,0);
+			textSize(15);
+			text(this.name, drawx- this.radius/2, drawy - this.radius/2);
+	}
+
 	drawReal() {
 		if (this.life == 1) {
+		
+			// console.log(this.name)
+			this.drawName(this.realx+offsetx, this.realy+offsety);
 			fill(255, 0, 0);
 			ellipse(this.realx + offsetx, this.realy + offsety, this.radius, this.radius);
 		}
@@ -95,6 +104,7 @@ class Dot {
 	draw() {
 
 		// background(255)
+		this.drawName(this.x, this.y);
 		if (this.life == 1)
 			fill(255, 0, 0)
 		else
@@ -118,7 +128,7 @@ let food = [];
 var currentKey;
 var currentName;
 const START = 1, ALIVE = 2, DEAD = 3;
-var gameState = START; //1 = Alive, 2 = Dead
+var gameState = START; 
 
 function preload() {
 	txtFont = loadFont('inconsolata.ttf')
