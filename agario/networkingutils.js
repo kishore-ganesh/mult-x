@@ -23,18 +23,20 @@ socket.on("players", data => {
   }
   console.log(currentKey)
   if (currentKey == undefined) {
+    
+}
+});
+
+function createPlayer(){
     currentKey = socket.id;
     dot.x = random(windowWidth/3, 2*windowWidth/3)
     dot.y = random(windowHeight/3, 2*windowHeight/3)
     dot.realx = dot.x 
     dot.realy = dot.y
-    console.log(dot.x)
-    console.log(dot.y)
+    dot.name = currentName;
+    // console.log(dot.name)
     sendPlayer(dot);
 }
-});
-
-
 socket.on("food", (data)=>{
     // console.log(food);
     for(let i=0; i<data.food.length; i++)
@@ -56,12 +58,14 @@ function sendPlayer(dot) {
   socket.emit("newplayer", {
     key: currentKey,
     value: {
+      key: currentKey,
       x: dot.x,
       y: dot.y,
       radius: dot.radius,
       realx: dot.x - offsetx,
       realy: dot.y - offsety,
-      life: dot.life
+      life: dot.life,
+      name: dot.name
     }
   });
 }
@@ -70,6 +74,7 @@ function respawnPlayer(){
   key = currentKey
   currentKey = undefined
   socket.emit("respawn", {key})
+  createPlayer();
   
 }
 
@@ -90,11 +95,13 @@ function sendFoodEaten(i)
 //current gravity should be max
 
 socket.on("playerUpdated", data => {
-  players[data.key].x = data.value.x;
-  players[data.key].y = data.value.y;
-  players[data.key].radius = data.value.radius;
-  players[data.key].realx = data.value.realx;
-  players[data.key].realy = data.value.realy;
-  players[data.key].life=data.value.life;
+  // console.log(data)
+  players[data.key].x = data.x;
+  players[data.key].y = data.y;
+  players[data.key].radius = data.radius;
+  players[data.key].realx = data.realx;
+  players[data.key].realy = data.realy;
+  players[data.key].life=data.life;
+  players[data.key].name = data.name;
 });
 

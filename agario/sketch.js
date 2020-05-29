@@ -1,9 +1,10 @@
 class Dot {
-	constructor(x, y, radius, realx, realy) {
+	constructor(x, y, radius, realx, realy, name) {
 		this.x = x;
 		this.y = y;
 		this.life = 1;
 		this.score = 0;
+		this.name = name;
 
 		if (realx == undefined) {
 			this.realx = this.x - offsetx;
@@ -73,7 +74,7 @@ class Dot {
 		t.y = mouseY;
 		t.realx = this.x - offsetx;
 		t.realy = this.y - offsety;
-		
+
 		updatePlayer(t, currentKey);
 	}
 
@@ -115,16 +116,37 @@ var dot = new Dot(600, 600)
 let players = {};
 let food = [];
 var currentKey;
-var gameState = 1; //1 = Alive, 2 = Dead
-function preload(){
+var currentName;
+const START = 1, ALIVE = 2, DEAD = 3;
+var gameState = START; //1 = Alive, 2 = Dead
+
+function preload() {
 	txtFont = loadFont('inconsolata.ttf')
+}
+
+function takeName(){
+	currentName = nameBox.value();
+	console.log(currentName);
+	gameState = 2;
+	// removeElements();
+	createPlayer();
+	nameBox.remove();
+	button.remove();
+	label.remove();
 }
 function setup() {
 	createCanvas(windowWidth, windowHeight);
 	// console.log(txtFont);
 	textFont(txtFont)
-	textSize(width/3);
+	textSize(width / 3);
 	textAlign(CENTER, CENTER)
+	nameBox = createInput();
+	nameBox.position(width/2, height/2);
+	button = createButton('Play')
+	button.position(nameBox.x + nameBox.width, height/2)
+	button.mousePressed(takeName);
+	label = createElement('h2', 'Enter name');
+	label.position(width/3, height/3);
 	//console.log(windowWidth)
 	// food = [];
 	// for(let i=0;i<500;i++){
@@ -138,20 +160,21 @@ function setup() {
 
 }
 
-function drawGameOver(){
+function drawGameOver() {
 	textSize(100)
-	fill(0,255,255)
-	text('Game Over - Press R ', windowWidth/2,windowHeight/2);
+	fill(0, 255, 255)
+	text('Game Over - Press R ', windowWidth / 2, windowHeight / 2);
 	// textSize()
 }
 
-function keyPressed(){
-	if(key=='r'||key=='R'){
+function keyPressed() {
+	if (key == 'r' || key == 'R') {
 		// currentKey = undefined;
 		respawnPlayer();
-		gameState = 1;
+		gameState = ALIVE;
 	}
 }
+
 
 
 function draw() {
@@ -159,62 +182,68 @@ function draw() {
 	// gameState = 2;
 	// console.log(height)
 	// console.log(windowHeight)
-	
-	
+
+
 	// frameRate(1);
-	for (let i = 0; i < food.length; i++) {
-		food[i].draw();
-		if (players[currentKey]) {
-			players[currentKey].isColliding(food[i]);
-		}
-
-	}
-
-
-
-
-	for (let i in players) {
-		if (players[i] != undefined && i != currentKey && players[currentKey] != undefined) {
-
-			players[i].drawReal();
-			players[currentKey].isPlayerColliding(players[i], i);
-
-		}
-
-	}
-	if (gameState == 1) {
-		if (players[currentKey] != undefined) {
-			
-			if(players[currentKey].life!=1){
-				gameState = 2;
+	
+	if (gameState!=START) {
+		// background(255)
+		for (let i = 0; i < food.length; i++) {
+			food[i].draw();
+			if (players[currentKey]) {
+				players[currentKey].isColliding(food[i]);
 			}
-			players[currentKey].draw();
-			players[currentKey].update();
+
 		}
 
 
 
-		//add offset boundary 
 
-		//we have to coordinate offsets for all
+		for (let i in players) {
+			if (players[i] != undefined && i != currentKey && players[currentKey] != undefined) {
 
-		if (players[currentKey]) {
-			if (players[currentKey].x + players[currentKey].radius / 2 >= windowWidth - 200) {
-				offsetx-=5;
+				// console.log(players[i].name);
+				players[i].drawReal();
+				players[currentKey].isPlayerColliding(players[i], i);
+
 			}
-			if (players[currentKey].x - players[currentKey].radius / 2 <= 200) {
-				offsetx+=5;
+
+		}
+		if (gameState == ALIVE) {
+			if (players[currentKey] != undefined) {
+
+				if (players[currentKey].life != 1) {
+					gameState = DEAD;
+				}
+				players[currentKey].draw();
+				players[currentKey].update();
 			}
-			if (players[currentKey].y + players[currentKey].radius / 2 >= windowHeight - 200) {
-				offsety-=5;
-			}
-			if (players[currentKey].y - players[currentKey].radius / 2 <= 200) {
-				offsety+=5;
+
+
+
+			//add offset boundary 
+
+			//we have to coordinate offsets for all
+
+			if (players[currentKey]) {
+				if (players[currentKey].x + players[currentKey].radius / 2 >= windowWidth - 200) {
+					offsetx -= 5;
+				}
+				if (players[currentKey].x - players[currentKey].radius / 2 <= 200) {
+					offsetx += 5;
+				}
+				if (players[currentKey].y + players[currentKey].radius / 2 >= windowHeight - 200) {
+					offsety -= 5;
+				}
+				if (players[currentKey].y - players[currentKey].radius / 2 <= 200) {
+					offsety += 5;
+				}
 			}
 		}
-	}
-	else{
-		drawGameOver();
+		else {
+			drawGameOver();
+		}
+
 	}
 
 

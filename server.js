@@ -66,10 +66,10 @@ io.on('connection', (socket)=>{
     socket.on('newplayer', (data)=>{
 
     
-
+        // console.log(data)
         
         players[data.key]=data.value;
-        console.log(players);
+        // console.log(players);
         playerSockets[socket.id]=data.key;
         io.emit('players', {
             players: players,
@@ -90,8 +90,9 @@ io.on('connection', (socket)=>{
             players[data.key].realx=data.value.realx;
             players[data.key].realy=data.value.realy;
             players[data.key].life= data.value.life;
-
-            io.emit('playerUpdated', data)
+            // data.name = players[data.key].name 
+            // console.log(players[data.key]);
+            io.emit('playerUpdated', players[data.key])
         }    
         
 
@@ -99,7 +100,7 @@ io.on('connection', (socket)=>{
 
     socket.on("eaten", (data)=>{
         food.splice(data.index,1);
-        console.log(food[0]);
+        // console.log(food[0]);
         io.emit("food", {
             food: food
         })
