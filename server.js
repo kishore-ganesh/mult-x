@@ -101,8 +101,8 @@ function updatePlayer(io, key, data){
 		player.realy += my*5;
         let prevx = player.x;
         let prevy = player.y;
-        player.x += mx;
-		player.y += mx;
+        player.x += mx*0.5;
+		player.y += mx*0.5;
 		
 		
 		player.x = Math.max(-BOUND, player.x);

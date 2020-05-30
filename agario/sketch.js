@@ -111,6 +111,7 @@ class Dot {
 			let cy = player.realy - height/2 - player.y;
 			let nx = this.realx - cx;
 			let ny = this.realy - cy;
+			this.drawName(nx, ny);
 			ellipse(nx, ny, this.radius, this.radius);
 		}
 
@@ -126,12 +127,14 @@ class Dot {
 
 		// background(255)
 		// this.drawName(this.x, this.y);
+		let cx = width/2 + this.x;
+		let cy = height/2 + this.y;
+		this.drawName(cx, cy);
 		if (this.life == 1)
 			fill(255, 0, 0)
 		else
 			fill(255);
-		let cx = width/2 + this.x;
-		let cy = height/2 + this.y;
+		
 		ellipse(cx, cy, this.radius, this.radius);
 	}
 
