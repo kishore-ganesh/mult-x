@@ -208,7 +208,7 @@ function keyPressed() {
 
 function draw() {
 	background(255);
-	console.log(radius);
+	
 	// gameState = 2;
 	// console.log(height)
 	// console.log(windowHeight)
@@ -245,6 +245,7 @@ function draw() {
 				if (players[currentKey].life != 1) {
 					gameState = DEAD;
 				}
+				console.log(players[currentKey].radius);
 				players[currentKey].draw();
 				players[currentKey].update();
 			}
