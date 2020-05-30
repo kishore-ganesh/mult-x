@@ -204,7 +204,7 @@ function drawGameOver() {
 }
 
 function keyPressed() {
-	if (key == 'r' || key == 'R') {
+	if (gameState == DEAD && (key == 'r' || key == 'R')) {
 		// currentKey = undefined;
 		respawnPlayer();
 		gameState = ALIVE;

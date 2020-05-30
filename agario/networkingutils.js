@@ -92,18 +92,30 @@ function sendFoodEaten(i)
 
 //current gravity should be max
 
-socket.on("playerUpdated", data => {
+socket.on("playerUpdated", updatedPlayers => {
   // console.log(data)
-  players[data.key].x = data.x;
-  players[data.key].y = data.y;
-  players[data.key].radius = data.radius;
-  players[data.key].realx = data.realx;
-  players[data.key].realy = data.realy;
-  players[data.key].life=data.life;
-  players[data.key].name = data.name;
-  if(data.key == currentKey){
-    // console.log(data.key);
-    socket.emit("ack", {key: currentKey});
+  // players = data;
+  for(let player in updatedPlayers){
+    // players[player] 
+    let data = updatedPlayers[player];
+    // console.log(player)
+    // console.log(data)
+    if(players[data.key]){
+      players[data.key].x = data.x;
+      players[data.key].y = data.y;
+      players[data.key].radius = data.radius;
+      players[data.key].realx = data.realx;
+      players[data.key].realy = data.realy;
+      players[data.key].life=data.life;
+      players[data.key].name = data.name;
+    }
+    
+    
   }
+  
+  // if(data.key == currentKey){
+  //   // console.log(data.key);
+  //   socket.emit("ack", {key: currentKey});
+  // }
 });
 

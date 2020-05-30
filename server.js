@@ -114,7 +114,7 @@ function updatePlayer(io, key, data){
         player.realx += player.x - prevx;
         player.realy += player.y - prevy;
         // updatePlayer(t, currentKey);
-        io.emit('playerUpdate', player);
+        // io.emit('playerUpdate', player);
 }
 
 function checkPlayers(io, key){
@@ -125,8 +125,8 @@ function checkPlayers(io, key){
             // console.log(players[i].name);
             // players[i].drawReal();
              if(isPlayerColliding(key,players[i], i)){
-                io.emit('playerUpdate', players[key]);
-                io.emit('playerUpdate', players[i]);
+                // io.emit('playerUpdate', players[key]);
+                // io.emit('playerUpdate', players[i]);
              }
 
         }
@@ -173,11 +173,11 @@ function checkFood(io, key){
         }
     }
     food = nfood;
-    io.emit("food", {
-        food: food
-    })
+    // io.emit("food", {
+    //     food: food
+    // })
 
-    io.emit("playerUpdated", players[key])
+    // io.emit("playerUpdated", players[key])
 }
 
 //secure client side
@@ -200,6 +200,8 @@ io.on('connection', (socket)=>{
         player.radius = 50;
         player.life = 1;
         player.score = 0;
+        player.key = data.key;
+        // console.log(player.key)
         players[data.key]=player;
         // console.log(players);
         playerSockets[socket.id]=data.key;
@@ -233,7 +235,10 @@ io.on('connection', (socket)=>{
             updatePlayer(io, data.key, data);
             checkFood(io, data.key);
             checkPlayers(io, data.key);
-            // io.emit('playerUpdated', players[data.key])
+            
+            // console.log(players);
+            io.emit('playerUpdated', players)
+            io.emit('food', {food});
         }    
         
 
