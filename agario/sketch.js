@@ -5,6 +5,8 @@ class Dot {
 		this.life = 1;
 		this.score = 0;
 		this.name = name;
+		this.dx = 0;
+		this.dy = 0;
 
 		if (realx == undefined) {
 			this.realx = this.x - offsetx;
@@ -70,8 +72,18 @@ class Dot {
 
 	update() {
 		let t = Object.assign({}, this)
-		t.x = mouseX;
-		t.y = mouseY;
+		let mx = mouseX - this.x;
+		let my = mouseY - this.y;
+		let slope = mx/my;
+		let steps = abs(my) > abs(mx) ? abs(mx) : abs(my)
+
+		// mx = (mx>0?1:-1)
+		// my = (my>0?1:-1)
+		// s
+		// this.dx = mx;
+		// this.dy = my;
+		t.x += (mx/steps);
+		t.y += (my/steps);
 		t.realx = this.x - offsetx;
 		t.realy = this.y - offsety;
 
