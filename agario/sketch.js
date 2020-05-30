@@ -208,6 +208,7 @@ function keyPressed() {
 
 function draw() {
 	background(255);
+	console.log(radius);
 	// gameState = 2;
 	// console.log(height)
 	// console.log(windowHeight)
