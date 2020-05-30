@@ -211,6 +211,19 @@ function keyPressed() {
 	}
 }
 
+setInterval(()=>{
+	// console.log("Y");
+	if(currentKey && players[currentKey]){
+		updatePlayer({
+			mouseX,
+			mouseY,
+			x: width/2 + players[currentKey].x,
+			y: height/2 + players[currentKey].y
+		});
+	}
+	
+},30);
+
 
 
 function draw() {
@@ -253,12 +266,7 @@ function draw() {
 			
 			if (players[currentKey] != undefined) {
 
-				updatePlayer({
-					mouseX,
-					mouseY,
-					x: width/2 + players[currentKey].x,
-					y: height/2 + players[currentKey].y
-				});
+				
 				if (players[currentKey].life != 1) {
 					gameState = DEAD;
 				}
