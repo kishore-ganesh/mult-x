@@ -6,9 +6,7 @@ class Dot {
 		this.life = 1;
 		this.score = 0;
 		this.name = name;
-		this.dx = 0;
-		this.dy = 0;
-
+		
 		if (realx == undefined) {
 			this.realx = this.x - offsetx;
 			this.realy = this.y - offsety;
@@ -103,13 +101,17 @@ class Dot {
 			text(this.name, drawx- this.radius/2, drawy - this.radius/2);
 	}
 
-	drawReal() {
+	drawReal(player) {
 		if (this.life == 1) {
 		
 			// console.log(this.name)
-			this.drawName(this.realx+offsetx, this.realy+offsety);
+			// this.drawName(this.realx+offsetx, this.realy+offsety);
 			fill(255, 0, 0);
-			ellipse(this.realx + offsetx, this.realy + offsety, this.radius, this.radius);
+			let cx = player.realx - width/2 - player.x;
+			let cy = player.realy - height/2 - player.y;
+			let nx = this.realx - cx;
+			let ny = this.realy - cy;
+			ellipse(nx, ny, this.radius, this.radius);
 		}
 
 		// else{
@@ -123,12 +125,14 @@ class Dot {
 	draw() {
 
 		// background(255)
-		this.drawName(this.x, this.y);
+		// this.drawName(this.x, this.y);
 		if (this.life == 1)
 			fill(255, 0, 0)
 		else
 			fill(255);
-		ellipse(this.x, this.y, this.radius, this.radius);
+		let cx = width/2 + this.x;
+		let cy = height/2 + this.y;
+		ellipse(cx, cy, this.radius, this.radius);
 	}
 
 
@@ -219,10 +223,13 @@ function draw() {
 	if (gameState!=START) {
 		// background(255)
 		for (let i = 0; i < food.length; i++) {
-			food[i].draw();
-			if (players[currentKey]) {
-				players[currentKey].isColliding(food[i]);
+			if(players[currentKey]!=undefined){
+				food[i].draw(players[currentKey]);
 			}
+			
+			// if (players[currentKey]) {
+			// 	players[currentKey].isColliding(food[i]);
+			// }
 
 		}
 
@@ -233,21 +240,28 @@ function draw() {
 			if (players[i] != undefined && i != currentKey && players[currentKey] != undefined) {
 
 				// console.log(players[i].name);
-				players[i].drawReal();
-				players[currentKey].isPlayerColliding(players[i], i);
+				players[i].drawReal(players[currentKey]);
+				// players[currentKey].isPlayerColliding(players[i], i);
 
 			}
 
 		}
 		if (gameState == ALIVE) {
+			
 			if (players[currentKey] != undefined) {
 
+				updatePlayer({
+					mouseX,
+					mouseY,
+					x: width/2 + players[currentKey].x,
+					y: height/2 + players[currentKey].y
+				});
 				if (players[currentKey].life != 1) {
 					gameState = DEAD;
 				}
-				console.log(players[currentKey].radius);
+				// console.log(players[currentKey].realx);
 				players[currentKey].draw();
-				players[currentKey].update();
+				// players[currentKey].update();
 			}
 
 
@@ -290,9 +304,13 @@ class Food {
 		this.x = x;
 		this.y = y;
 	}
-	draw() {
+	draw(player) {
 		fill(0, 255, 0);
-		rect(this.x + offsetx, this.y + offsety, 12, 12);
+		let cx = player.realx - width/2 - player.x;
+		let cy = player.realy - height/2 - player.y;
+		let nx = this.x - cx;
+		let ny = this.y - cy;
+		rect(nx, ny, 12, 12);
 	}
 
 }

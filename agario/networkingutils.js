@@ -30,8 +30,9 @@ socket.on("players", data => {
 
 function createPlayer(){
     currentKey = socket.id;
-    dot.x = windowWidth/2;
-    dot.y = windowHeight/2;
+    // dot.x = windowWidth/2;
+    // dot.y = windowHeight/2;
+    let dot = {};
     dot.realx = random(0, width/2) + dot.x 
     dot.realy = random(0, height/2) +dot.y
     dot.name = currentName;
@@ -60,12 +61,10 @@ function sendPlayer(dot) {
     key: currentKey,
     value: {
       key: currentKey,
-      x: dot.x,
-      y: dot.y,
-      radius: dot.radius,
-      realx: dot.x - offsetx,
-      realy: dot.y - offsety,
-      life: dot.life,
+      // radius: dot.radius,
+      realx: dot.realx,
+      realy: dot.realy,
+      // life: dot.life,
       name: dot.name
     }
   });
@@ -79,11 +78,9 @@ function respawnPlayer(){
   
 }
 
-function updatePlayer(player,key) {
-  socket.emit("update", {
-    key: key,
-    value: player
-  });
+function updatePlayer(data) {
+  data.key = currentKey
+  socket.emit("update", data);
 }
 
 function sendFoodEaten(i)
@@ -105,7 +102,7 @@ socket.on("playerUpdated", data => {
   players[data.key].life=data.life;
   players[data.key].name = data.name;
   if(data.key == currentKey){
-    console.log(data.key);
+    // console.log(data.key);
     socket.emit("ack", {key: currentKey});
   }
 });
