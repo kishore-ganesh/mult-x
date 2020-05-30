@@ -30,10 +30,10 @@ socket.on("players", data => {
 
 function createPlayer(){
     currentKey = socket.id;
-    dot.x = random(windowWidth/3, 2*windowWidth/3)
-    dot.y = random(windowHeight/3, 2*windowHeight/3)
-    dot.realx = dot.x 
-    dot.realy = dot.y
+    dot.x = windowWidth/2;
+    dot.y = windowHeight/2;
+    dot.realx = random(0, width/2) + dot.x 
+    dot.realy = random(0, height/2) +dot.y
     dot.name = currentName;
     // console.log(dot.name)
     sendPlayer(dot);

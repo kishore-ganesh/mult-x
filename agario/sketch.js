@@ -1,3 +1,4 @@
+const BOUND = 5;
 class Dot {
 	constructor(x, y, radius, realx, realy, name) {
 		this.x = x;
@@ -74,19 +75,25 @@ class Dot {
 		let t = Object.assign({}, this)
 		let mx = mouseX - this.x;
 		let my = mouseY - this.y;
-		let slope = mx/my;
-		let steps = abs(my) > abs(mx) ? abs(mx) : abs(my)
-
-		// mx = (mx>0?1:-1)
-		// my = (my>0?1:-1)
+		
+		if(mx!=0) mx = (mx>0?-1:1)
+		if(my!=0) my = (my>0?-1:1)
 		// s
+
 		// this.dx = mx;
 		// this.dy = my;
-		t.x += (mx/steps);
-		t.y += (my/steps);
-		t.realx = this.x - offsetx;
-		t.realy = this.y - offsety;
-
+		offsetx += mx*5;
+		offsety += my*5;
+		t.x += mx;
+		t.y += mx;
+		
+		
+		t.x = max(width/2-BOUND, t.x);
+		t.x = min(width/2+BOUND, t.x);
+		t.y = min(height/2+BOUND, t.y);
+		t.y = max(height/2-BOUND, t.y);
+		t.realx = t.x + offsetx;
+		t.realy = t.y + offsety;
 		updatePlayer(t, currentKey);
 	}
 
@@ -247,20 +254,20 @@ function draw() {
 
 			//we have to coordinate offsets for all
 
-			if (players[currentKey]) {
-				if (players[currentKey].x + players[currentKey].radius / 2 >= windowWidth - 200) {
-					offsetx -= 5;
-				}
-				if (players[currentKey].x - players[currentKey].radius / 2 <= 200) {
-					offsetx += 5;
-				}
-				if (players[currentKey].y + players[currentKey].radius / 2 >= windowHeight - 200) {
-					offsety -= 5;
-				}
-				if (players[currentKey].y - players[currentKey].radius / 2 <= 200) {
-					offsety += 5;
-				}
-			}
+			// if (players[currentKey]) {
+			// 	if (players[currentKey].x + players[currentKey].radius / 2 >= windowWidth - 200) {
+			// 		offsetx -= 5;
+			// 	}
+			// 	if (players[currentKey].x - players[currentKey].radius / 2 <= 200) {
+			// 		offsetx += 5;
+			// 	}
+			// 	if (players[currentKey].y + players[currentKey].radius / 2 >= windowHeight - 200) {
+			// 		offsety -= 5;
+			// 	}
+			// 	if (players[currentKey].y - players[currentKey].radius / 2 <= 200) {
+			// 		offsety += 5;
+			// 	}
+			// }
 		}
 		else {
 			drawGameOver();
