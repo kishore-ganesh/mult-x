@@ -71,6 +71,8 @@ io.on('connection', (socket)=>{
         players[data.key]=data.value;
         // console.log(players);
         playerSockets[socket.id]=data.key;
+        // playerCount.ack =
+        players[data.key].ack = 1;
         io.emit('players', {
             players: players,
             playerCount: playerCount
@@ -82,14 +84,18 @@ io.on('connection', (socket)=>{
     socket.on('update', (data)=>{
 
         
-        if(players[data.key])
+        if(players[data.key] && (players[data.key].life ==0 || players[data.key].ack==1))
         {
-            players[data.key].x=data.value.x;
-            players[data.key].y=data.value.y;
-            players[data.key].radius=data.value.radius;
-            players[data.key].realx=data.value.realx;
-            players[data.key].realy=data.value.realy;
             players[data.key].life= data.value.life;
+            if(players[data.key].ack==1){
+                players[data.key].x=data.value.x;
+                players[data.key].y=data.value.y;
+                players[data.key].radius=data.value.radius;
+                players[data.key].realx=data.value.realx;
+                players[data.key].realy=data.value.realy;
+            }
+            players[data.key].ack = 0;
+            
             // data.name = players[data.key].name 
             // console.log(players[data.key]);
             io.emit('playerUpdated', players[data.key])
@@ -104,6 +110,10 @@ io.on('connection', (socket)=>{
         io.emit("food", {
             food: food
         })
+    })
+
+    socket.on("ack", (data)=>{
+        players[data.key].ack = 1;
     })
 
     socket.on("respawn", data => {

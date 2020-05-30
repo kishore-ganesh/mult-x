@@ -31,7 +31,7 @@ class Dot {
 	}
 	isPlayerColliding(otherPlayer, i) {
 		if (otherPlayer.life == 1 && this.life == 1) {
-			let d = dist(otherPlayer.realx + offsetx, otherPlayer.realy + offsety, this.x, this.y)
+			let d = dist(otherPlayer.realx, otherPlayer.realy, this.realx, this.realy)
 			if (d <= this.radius / 2 && otherPlayer.radius < this.radius - 10) {
 				console.log("collided")
 				this.radius += otherPlayer.radius * 0.3;
@@ -52,7 +52,7 @@ class Dot {
 	}
 	isColliding(prey) {
 		if (this.life == 1) {
-			let d = dist(prey.x + offsetx, prey.y + offsety, this.x, this.y)
+			let d = dist(prey.x, prey.y, this.realx, this.realy)
 			if (d <= this.radius / 2) {
 				// this.radius += 10;
 				let t = Object.assign({}, this)
@@ -92,8 +92,8 @@ class Dot {
 		t.x = min(width/2+BOUND, t.x);
 		t.y = min(height/2+BOUND, t.y);
 		t.y = max(height/2-BOUND, t.y);
-		t.realx = t.x + offsetx;
-		t.realy = t.y + offsety;
+		t.realx = t.x - offsetx;
+		t.realy = t.y - offsety;
 		updatePlayer(t, currentKey);
 	}
 

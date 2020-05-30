@@ -104,5 +104,9 @@ socket.on("playerUpdated", data => {
   players[data.key].realy = data.realy;
   players[data.key].life=data.life;
   players[data.key].name = data.name;
+  if(data.key == currentKey){
+    console.log(data.key);
+    socket.emit("ack", {key: currentKey});
+  }
 });
 
