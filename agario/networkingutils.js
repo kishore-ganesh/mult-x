@@ -5,13 +5,13 @@ var socket = io();
 
 socket.on("players", data => {
 
-    // console.log(players)
-    players={};
-    for (let i in data.players) {
+  // console.log(players)
+  players = {};
+  for (let i in data.players) {
 
 
     if (data.players[i] != undefined) {
-      players[i]=new Dot(
+      players[i] = new Dot(
         data.players[i].x,
         data.players[i].y,
         data.players[i].radius,
@@ -19,38 +19,37 @@ socket.on("players", data => {
         data.players[i].realy,
         data.players[i].name
       );
-      players[i].life=data.players[i].life;
+      players[i].life = data.players[i].life;
     }
   }
   // console.log(currentKey)
   if (currentKey == undefined) {
-    
-}
+
+  }
 });
 
-function createPlayer(){
-    currentKey = socket.id;
-    // dot.x = windowWidth/2;
-    // dot.y = windowHeight/2;
-    let dot = {};
-    dot.realx = random(0, width/2) + dot.x 
-    dot.realy = random(0, height/2) +dot.y
-    dot.name = currentName;
-    // console.log(dot.name)
-    sendPlayer(dot);
+function createPlayer() {
+  currentKey = socket.id;
+  // dot.x = windowWidth/2;
+  // dot.y = windowHeight/2;
+  let dot = {};
+  dot.realx = random(0, width / 2) + dot.x
+  dot.realy = random(0, height / 2) + dot.y
+  dot.name = currentName;
+  // console.log(dot.name)
+  sendPlayer(dot);
 }
-socket.on("food", (data)=>{
-    // console.log(food);
-    for(let i=0; i<data.food.length; i++)
-    {
-      
-      food[i]=new Food();
-      food[i].x=data.food[i].x;
-      food[i].y=data.food[i].y;
-      
-    }
+socket.on("food", (data) => {
+  // console.log(food);
+  for (let i = 0; i < data.food.length; i++) {
 
-    
+    food[i] = new Food();
+    food[i].x = data.food[i].x;
+    food[i].y = data.food[i].y;
+
+  }
+
+
 
 
 
@@ -70,12 +69,12 @@ function sendPlayer(dot) {
   });
 }
 
-function respawnPlayer(){
+function respawnPlayer() {
   key = currentKey
   currentKey = undefined
-  socket.emit("respawn", {key})
+  socket.emit("respawn", { key })
   createPlayer();
-  
+
 }
 
 function updatePlayer(data) {
@@ -83,11 +82,10 @@ function updatePlayer(data) {
   socket.emit("update", data);
 }
 
-function sendFoodEaten(i)
-{
-    socket.emit("eaten", {
-        index: i
-    })
+function sendFoodEaten(i) {
+  socket.emit("eaten", {
+    index: i
+  })
 }
 
 //current gravity should be max
@@ -95,24 +93,24 @@ function sendFoodEaten(i)
 socket.on("playerUpdated", updatedPlayers => {
   // console.log(data)
   // players = data;
-  for(let player in updatedPlayers){
+  for (let player in updatedPlayers) {
     // players[player] 
     let data = updatedPlayers[player];
     // console.log(player)
     // console.log(data)
-    if(players[data.key]){
+    if (players[data.key]) {
       players[data.key].x = data.x;
       players[data.key].y = data.y;
       players[data.key].radius = data.radius;
       players[data.key].realx = data.realx;
       players[data.key].realy = data.realy;
-      players[data.key].life=data.life;
+      players[data.key].life = data.life;
       players[data.key].name = data.name;
     }
-    
-    
+
+
   }
-  
+
   // if(data.key == currentKey){
   //   // console.log(data.key);
   //   socket.emit("ack", {key: currentKey});
