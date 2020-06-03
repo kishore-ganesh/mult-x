@@ -17,7 +17,8 @@ socket.on("players", data => {
         data.players[i].radius,
         data.players[i].realx,
         data.players[i].realy,
-        data.players[i].name
+        data.players[i].name,
+        data.players[i].score,
       );
       players[i].life = data.players[i].life;
     }
@@ -102,6 +103,7 @@ socket.on("playerUpdated", updatedPlayers => {
       players[data.key].x = data.x;
       players[data.key].y = data.y;
       players[data.key].radius = data.radius;
+      players[data.key].score = data.score;
       players[data.key].realx = data.realx;
       players[data.key].realy = data.realy;
       players[data.key].life = data.life;

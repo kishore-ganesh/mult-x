@@ -1,18 +1,16 @@
 const BOUND = 5;
+const DEBUG = true;
 class Dot {
-	constructor(x, y, radius, realx, realy, name) {
+	constructor(x, y, radius, realx, realy, name, score) {
 		this.x = x;
 		this.y = y;
 		this.life = 1;
-		this.score = 0;
 		this.name = name;
 
 		if (realx == undefined) {
 			this.realx = this.x - offsetx;
 			this.realy = this.y - offsety;
-		}
-
-		else {
+		} else {
 			this.realx = realx;
 			this.realy = realy;
 		}
@@ -20,16 +18,17 @@ class Dot {
 
 		if (radius == undefined) {
 			this.radius = 50;
-		}
-
-		else {
+		} else {
 			this.radius = radius;
 		}
 
+		if (score == undefined) {
+			this.score = 0;
+		} else {
+			this.score = score;
+		}
+
 	}
-
-
-
 
 	drawName(drawx, drawy) {
 		fill(0, 0, 0);
@@ -39,9 +38,6 @@ class Dot {
 
 	drawReal(player) {
 		if (this.life == 1) {
-
-			// console.log(this.name)
-			// this.drawName(this.realx+offsetx, this.realy+offsety);
 			fill(255, 0, 0);
 			let cx = player.realx - width / 2 - player.x;
 			let cy = player.realy - height / 2 - player.y;
@@ -50,27 +46,24 @@ class Dot {
 			this.drawName(nx, ny);
 			ellipse(nx, ny, this.radius, this.radius);
 		}
-
-		// else{
-		// 	fill(255);
-		// }
-
-
 	}
 
+	drawSize(drawx, drawy) {
+		textSize(12.5);
+		text(this.radius.toFixed(2), drawx - this.radius / 2, drawy - this.radius / 2);
+	}
 
 	draw() {
-
-		// background(255)
-		// this.drawName(this.x, this.y);
 		let cx = width / 2 + this.x;
 		let cy = height / 2 + this.y;
 		this.drawName(cx, cy);
-		if (this.life == 1)
+		if (this.life == 1) {
 			fill(255, 0, 0)
-		else
+			if (DEBUG) {
+				this.drawSize(cx, cy+15)
+			}
+		} else
 			fill(255);
-
 		ellipse(cx, cy, this.radius, this.radius);
 	}
 
@@ -92,14 +85,9 @@ class LeaderBoard {
 		this.players = players;
 	}
 	sortPlayers() {
-		// console.log(Object.entries(this.players).sort());
 		this.sortedPlayers = Object.entries(this.players).sort(function (a, b) {
-			// print(a);
-			// console.log(a[1]['radius']);
 			return b[1]['radius'] - a[1]['radius'];
 		});
-		// console.log(this.sortedPlayers);
-		// console.log(this.sortedPlayers);
 	}
 	fillLeaderBoard(x, y) {
 		// console.log(this.sortedPlayers[0][1])
@@ -108,14 +96,12 @@ class LeaderBoard {
 		var i;
 		for (i = 0; i < this.sortedPlayers.length; i++) {
 			let player = this.sortedPlayers[i][1]
-			// console.log(player);
 			textSize(20);
 			fill(200, 200, 200);
-
 			textAlign(LEFT, CENTER);
 			text(player['name'], x, y);
 			textAlign(RIGHT, CENTER);
-			text(player['radius'], x - 50 + (width / 5), y);
+			text(player['score'], x - 50 + (width / 5), y);
 			y = y + 25;
 		}
 	}
@@ -155,9 +141,9 @@ function takeName() {
 	button.remove();
 	label.remove();
 }
+
 function setup() {
 	createCanvas(windowWidth, windowHeight);
-	// console.log(txtFont);
 	textFont(txtFont)
 	textSize(width / 3);
 	textAlign(CENTER, CENTER)
@@ -218,41 +204,24 @@ function draw() {
 			if (players[currentKey] != undefined) {
 				food[i].draw(players[currentKey]);
 			}
-
 		}
 
 		for (let i in players) {
 			if (players[i] != undefined && i != currentKey && players[currentKey] != undefined) {
-
-
 				players[i].drawReal(players[currentKey]);
-
-
 			}
-
 		}
 		if (gameState == ALIVE) {
-
 			if (players[currentKey] != undefined) {
-
-
 				if (players[currentKey].life != 1) {
 					gameState = DEAD;
 				}
-				// console.log(players[currentKey].realx);
 				players[currentKey].draw();
-				// players[currentKey].update();
 			}
-
-
-
 			//add offset boundary 
-
 			//we have to coordinate offsets for all
-
 			leaderBoard.updatePlayer(players);
 			leaderBoard.sortPlayers();
-
 			leaderBoard.draw();
 
 		}
@@ -261,12 +230,6 @@ function draw() {
 		}
 
 	}
-
-
-	// dot.draw();
-
-
-
 }
 
 //shoot projecticle
