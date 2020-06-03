@@ -82,6 +82,55 @@ class Dot {
 	//buffer array
 	//speed buffer
 }
+
+class LeaderBoard {
+	constructor(players) {
+		this.players = players;
+		this.sortedPlayers = [];
+	}
+	updatePlayer(players) {
+		this.players = players;
+	}
+	sortPlayers() {
+		// console.log(Object.entries(this.players).sort());
+		this.sortedPlayers = Object.entries(this.players).sort(function (a, b) {
+			// print(a);
+			// console.log(a[1]['radius']);
+			return b[1]['radius'] - a[1]['radius'];
+		});
+		// console.log(this.sortedPlayers);
+		// console.log(this.sortedPlayers);
+	}
+	fillLeaderBoard(x, y) {
+		// console.log(this.sortedPlayers[0][1])
+		y = y + 50;
+		x = x + 25;
+		var i;
+		for (i = 0; i < this.sortedPlayers.length; i++) {
+			let player = this.sortedPlayers[i][1]
+			// console.log(player);
+			textSize(20);
+			fill(200, 200, 200);
+
+			textAlign(LEFT, CENTER);
+			text(player['name'], x, y);
+			textAlign(RIGHT, CENTER);
+			text(player['radius'], x - 50 + (width / 5), y);
+			y = y + 25;
+		}
+	}
+	draw() {
+		let cx = width - (width / 5) - 50;
+		let cy = 20;
+		fill(0, 200)
+		rect(cx, cy, width / 5, height / 2);
+		textSize(25);
+		fill(255, 255, 255)
+		textAlign(CENTER, CENTER)
+		text('Leader Board', cx + (width / 10), cy + 20);
+		this.fillLeaderBoard(cx, cy)
+	}
+}
 var offsetx = 0;
 var offsety = 0;
 var dot = new Dot(600, 600)
@@ -119,13 +168,14 @@ function setup() {
 	button.mousePressed(takeName);
 	label = createElement('h2', 'Enter name');
 	label.position(width / 3, height / 3);
-	
+
 
 }
 
 function drawGameOver() {
 	textSize(100)
 	fill(0, 255, 255)
+	textAlign(CENTER, CENTER);
 	text('Game Over - Press R ', windowWidth / 2, windowHeight / 2);
 	// textSize()
 }
@@ -152,7 +202,6 @@ setInterval(() => {
 }, 30);
 
 
-
 function draw() {
 	background(255);
 
@@ -161,10 +210,10 @@ function draw() {
 	// console.log(windowHeight)
 
 
+	leaderBoard = new LeaderBoard(players)
 	// frameRate(1);
-
 	if (gameState != START) {
-		
+
 		for (let i = 0; i < food.length; i++) {
 			if (players[currentKey] != undefined) {
 				food[i].draw(players[currentKey]);
@@ -172,15 +221,12 @@ function draw() {
 
 		}
 
-
-
-
 		for (let i in players) {
 			if (players[i] != undefined && i != currentKey && players[currentKey] != undefined) {
 
-				
+
 				players[i].drawReal(players[currentKey]);
-				
+
 
 			}
 
@@ -204,7 +250,11 @@ function draw() {
 
 			//we have to coordinate offsets for all
 
-	
+			leaderBoard.updatePlayer(players);
+			leaderBoard.sortPlayers();
+
+			leaderBoard.draw();
+
 		}
 		else {
 			drawGameOver();
