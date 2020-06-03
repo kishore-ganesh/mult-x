@@ -3,32 +3,50 @@ var app = express();
 var server = require('http').Server(app)
 var io = require('socket.io')(server);
 
-
-
 app.use('/', express.static("./agario"));
 
 
 let players = {};
-
 let playerSockets = [];
-
 let playerCount = 0;
-
 let food = [];
-
 const BOUND = 5;
 
 
-for (let i = 0; i < 500; i++) {
+function makeArray(w, h, val) {
+    var arr = [];
+    for(let i = 0; i < h; i++) {
+        arr[i] = [];
+        for(let j = 0; j < w; j++) {
+            arr[i][j] = val;
+        }
+    }
+    return arr;
+}
+
+let needsCheck = makeArray(4000,4000,'0')
+
+function getCheckIndex(x,y) {
+    if (x > 2000) x = 2000
+    if (x < -2000) x = -2000
+    if (y > 2000) y = 2000
+    if (y < -2000) y = -2000
+    return [x+2000,y+2000]
+}
+function createRandomFood() {
+    let x = Math.random() * 4000 - 2000 // -2000 to 2000
+    let y = Math.random() * 4000 - 2000
+    let checkIndices = getCheckIndex(x,y)
+    needsCheck[checkIndices[0], checkIndices[1]] = '1'
     food.push({
-        x: Math.random() * 4000 - 2000,
-        y: Math.random() * 4000 - 2000
+        x: x,
+        y: y
     });
 }
 
-//key value 
-
-
+for (let i = 0; i < 500; i++) {
+    createRandomFood()
+}
 
 function sendPlayersToEveryone() {
     io.emit('players', {
@@ -37,16 +55,12 @@ function sendPlayersToEveryone() {
     });
 }
 
-
 setInterval(() => {
     if (food.length < 500) {
         // console.log("CHANGE");
         // console.log(food.length)
         for (let i = 0; i < 10, food.length <= 500; i++) {
-            food.push({
-                x: Math.random() * 4000 - 2000,
-                y: Math.random() * 4000 - 2000
-            })
+            createRandomFood()
         }
 
         io.emit("food", { food: food })
@@ -59,6 +73,7 @@ setInterval(() => {
 function dist(x1, y1, x2, y2) {
     return Math.sqrt(Math.pow((y2 - y1), 2) + Math.pow((x2 - x1), 2));
 }
+
 function isPlayerColliding(key, otherPlayer, i) {
     console.log("COLL");
     if (otherPlayer.life == 1 && players[key].life == 1) {
@@ -150,12 +165,20 @@ function isColliding(key, prey) {
 function checkFood(io, key) {
     let marked = new Array(food.length);
     marked.fill(0);
+    let player = players[key]
+    cI = getCheckIndex(player.realx, player.realy)
+    if (needsCheck[cI[0], cI[1]] == '0') {
+        return
+    }
+    // console.log("CHECK")
     for (let i = 0; i < food.length; i++) {
-        if (players[key]) {
+        if (player) {
 
             if (isColliding(key, food[i])) {
                 // food.splice(data.index,1);
                 // console.log("EATEN");
+                chkIdx = getCheckIndex(food[1].x, food[i].y)
+                needsCheck[chkIdx[0], chkIdx[1]] = '0'
                 marked[i] = 1;
             };
         }
@@ -166,8 +189,8 @@ function checkFood(io, key) {
             nfood.push(food[i])
         }
         else {
-            players[key].radius += 10;
             players[key].score += 1;
+            players[key].radius += 9.5*(Math.pow((7/10), players[key].score)) + 0.5;
         }
     }
     food = nfood;
@@ -255,7 +278,7 @@ io.on('connection', (socket) => {
     })
 
     socket.on("respawn", data => {
-        console.log("RESPAWN CALLED")
+        // console.log("RESPAWN CALLED")
         delete players[data.key]
         socket.emit("players", {
             players,
@@ -269,12 +292,7 @@ io.on('connection', (socket) => {
         if (playerSockets[socket.id] != undefined) {
             delete players[socket.id];
         }
-
-
-
         sendPlayersToEveryone();
-
-
         // playerCount--;
     })
 
