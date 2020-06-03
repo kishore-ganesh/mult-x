@@ -175,6 +175,7 @@ function setup() {
 function drawGameOver() {
 	textSize(100)
 	fill(0, 255, 255)
+	textAlign(CENTER, CENTER);
 	text('Game Over - Press R ', windowWidth / 2, windowHeight / 2);
 	// textSize()
 }
