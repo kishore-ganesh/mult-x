@@ -88,8 +88,8 @@ function updatePlayer(io, key, data) {
     // console.log(mx + " " + my);
     // this.dx = mx;
     // this.dy = my;
-    player.realx += mx * 5;
-    player.realy += my * 5;
+    player.realx += mx * (4*(Math.pow((0.99), players[key].score)) + 2);
+    player.realy += my * (4*(Math.pow((0.99), players[key].score)) + 2);
     let prevx = player.x;
     let prevy = player.y;
     player.x += mx * 0.5;
@@ -102,7 +102,7 @@ function updatePlayer(io, key, data) {
     player.y = Math.max(-BOUND, player.y);
     // player.realx = player.x - offsetx;
     // player.realy = player.y - offsety;
-    player.realx += player.x - prevx;
+    player.realx += (player.x - prevx);
     player.realy += player.y - prevy;
     // updatePlayer(t, currentKey);
     // io.emit('playerUpdate', player);
