@@ -119,7 +119,7 @@ class LeaderBoard {
 			text(this.alive[i].value['score'], x - 50 + (width / 5), y);
 			y = y + 25;
 		}
-		if (disp && this.myRank != -1) {
+		if (disp && this.myRank != -1 && this.alive[this.myRank] != null) {
 			fill(255, 255, 255);
 			textAlign(LEFT, CENTER);
 			text(`${this.myRank + 1}. ${this.alive[this.myRank].value['name']}`, x, y);
