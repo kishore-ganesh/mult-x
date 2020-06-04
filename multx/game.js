@@ -1,4 +1,4 @@
-const BOUND = 40;
+const BOUND = 50;
 const DEBUG = true;
 class Dot {
 	constructor(x, y, radius, realx, realy, name, score) {

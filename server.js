@@ -10,7 +10,7 @@ let players = {};
 let playerSockets = [];
 let playerCount = 0;
 let food = [];
-const BOUND = 40;
+const BOUND = 50;
 
 function createRandomFood() {
     let x = Math.random() * 4000 - 2000 // -2000 to 2000
@@ -70,14 +70,14 @@ function updatePlayer(io, key, data) {
 
     if (mx != 0) mx = (mx > 0 ? 1 : -1)
     if (my != 0) my = (my > 0 ? 1 : -1)
-    player.realx += mx * (0.5 * (Math.pow((0.99), players[key].score)) + 1.5);
-    player.realy += my * (0.5 * (Math.pow((0.99), players[key].score)) + 1.5);
+    player.realx += mx * (4 * (Math.pow((0.99), players[key].score)) + 2);
+    player.realy += my * (4 * (Math.pow((0.99), players[key].score)) + 2);
     let prevx = player.x;
     let prevy = player.y;
     // if (oldmy == my) oldmy = 0;
     // if (oldmx == mx) oldmx = 0;
-    player.x += (mx * 0.3);// + (oldmx * 0.25);
-    player.y += (mx * 0.3);// + (oldmy * 0.25);
+    player.x += (mx * 0.4);// + (oldmx * 0.25);
+    player.y += (mx * 0.4);// + (oldmy * 0.25);
     // oldmx = mx;
     // oldmy = my;
     player.x = Math.max(-BOUND, Math.min(BOUND, player.x));
