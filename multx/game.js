@@ -129,6 +129,7 @@ class LeaderBoard {
 		}
 	}
 	draw() {
+		this.sortPlayers();
 		let cx = width - (width / 5) - 50;
 		let cy = 20;
 		fill(0, 200)
@@ -235,7 +236,7 @@ function draw() {
 			//add offset boundary 
 			//we have to coordinate offsets for all
 			// leaderBoard.updatePlayer();
-			leaderBoard.sortPlayers();
+			// leaderBoard.sortPlayers();
 			leaderBoard.draw();
 		}
 		else {
