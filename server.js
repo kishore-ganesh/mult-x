@@ -82,6 +82,7 @@ function isPlayerColliding(key, otherPlayer, i) {
         if (d <= player.radius / 2 && otherPlayer.radius < player.radius - 10) {
             // console.log("collided")
             player.radius += otherPlayer.radius * 0.3;
+            player.score += Math.ceil(otherPlayer.score * 0.3);
             otherPlayer.life = 0;
             return true;
 
