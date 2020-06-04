@@ -80,17 +80,23 @@ class LeaderBoard {
 	constructor() {
 		// this.players = players;
 		// this.sortedPlayers = [];
+		this.myRank = -1;
 		this.alive = [];
 	}
 	sortPlayers() {
 		Object.keys(players).forEach(function (key) {
 			let toInsert = true;
 			let pos = -1;
-			leaderBoard.alive.forEach(val => { if (toInsert && val.key == key) { toInsert = false; pos = leaderBoard.alive.indexOf(val); } })
+			leaderBoard.alive.forEach(val => {
+				if (toInsert && val.key == key) {
+					toInsert = false;
+					pos = leaderBoard.alive.indexOf(val);
+				}
+			});
 
 			if (!toInsert) {
 				leaderBoard.alive.splice(pos, 1);
-				console.log('removed');
+				// console.log('removed');
 			}
 			if (players[key]['life'] == 1) {
 				leaderBoard.alive.push({
@@ -98,10 +104,15 @@ class LeaderBoard {
 					value: players[key],
 				})
 			}
-		})
+		});
 		// this.sortedPlayers=this.alive.
 		this.alive.sort(function (a, b) {
 			return b.value['score'] - a.value['score'];
+		});
+
+		leaderBoard.alive.forEach(val => {
+			if (val.key == currentKey)
+				leaderBoard.myRank = leaderBoard.alive.indexOf(val);
 		});
 	}
 	fillLeaderBoard(cx, cy) {
@@ -109,20 +120,31 @@ class LeaderBoard {
 		let y = cy + 50;
 		let x = cx + 25;
 		let i;
-		let disp = 1;
+		var disp = true;
+		let compensate = 25;
 		textSize(20);
-		for (i = 0; y + 20 < cy + (height / 2) && i < this.alive.length; i++) {
+		for (i = 0; y + 20 + compensate < cy + (height / 2) && i < this.alive.length; i++) {
 			// let player = this.sortedPlayers[i][1];
 			fill(200, 200, 200);
-			if (this.alive[i].key == currentKey) {
-				disp = 0;
+			if (i == this.myRank) {
+				console.log(this.myRank);
+				disp = false;
+				compensate = 0;
 				fill(255, 255, 255);
 			}
 			textAlign(LEFT, CENTER);
-			text(this.alive[i].value['name'], x, y);
+			text(`${i + 1}. ${this.alive[i].value['name']}`, x, y);
 			textAlign(RIGHT, CENTER);
 			text(this.alive[i].value['score'], x - 50 + (width / 5), y);
 			y = y + 25;
+		}
+		if (disp && this.myRank != -1) {
+			fill(255, 255, 255);
+			textAlign(LEFT, CENTER);
+			text(`${this.myRank + 1}. ${this.alive[this.myRank].value['name']}`, x, y);
+			textAlign(RIGHT, CENTER);
+			text(this.alive[this.myRank].value['score'], x - 50 + (width / 5), y);
+
 		}
 	}
 	draw() {
