@@ -163,14 +163,43 @@ function isColliding(key, prey) {
     return false;
 }
 
+function runCheck(xCenter, yCenter, r) {
+    for (x = xCenter - r ; x <= xCenter; x++) {
+        for (y = yCenter - r ; y <= yCenter; y++)
+        {
+            // we don't have to take the square root, it's slow
+            if ((x - xCenter)*(x - xCenter) + (y - yCenter)*(y - yCenter) <= r*r) 
+            {
+                let xSym = Math.floor(xCenter - (x - xCenter));
+                let ySym = Math.floor(yCenter - (y - yCenter));
+                let _x = Math.floor(x)
+                let _y = Math.floor(y)
+                // console.log(_x, _y, xSym, ySym)
+                let p1 = getCheckIndex(_x,_y)
+                let p2 = getCheckIndex(_x,ySym)
+                let p3 = getCheckIndex(xSym,_y)
+                let p4 = getCheckIndex(xSym,ySym)
+                if (needsCheck[p1[0]][p1[1]] === '1') return true;
+                if (needsCheck[p2[0]][p2[1]] === '1') return true;
+                if (needsCheck[p3[0]][p3[1]] === '1') return true;
+                if (needsCheck[p4[0]][p4[1]] === '1') return true;
+                // (x, y), (x, ySym), (xSym , y), (xSym, ySym) are in the circle
+            }
+        }
+    }
+    return false;
+}
 function checkFood(io, key) {
     let marked = new Array(food.length);
     marked.fill(0);
     let player = players[key]
     cI = getCheckIndex(player.realx, player.realy)
-    if (needsCheck[cI[0], cI[1]] == '0') {
-        return
-    }
+    console.log(runCheck(player.realx, player.realy, player.radius))
+    // console.log()
+    // if (!) {
+    //     console.log("No check")
+    //     return
+    // }
     // console.log("CHECK")
     for (let i = 0; i < food.length; i++) {
         if (player) {
