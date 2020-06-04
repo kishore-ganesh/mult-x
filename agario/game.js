@@ -77,16 +77,31 @@ class Dot {
 }
 
 class LeaderBoard {
-	constructor(players) {
-		this.players = players;
-		this.sortedPlayers = [];
-	}
-	updatePlayer(players) {
-		this.players = players;
+	constructor() {
+		// this.players = players;
+		// this.sortedPlayers = [];
+		this.alive = [];
 	}
 	sortPlayers() {
-		this.sortedPlayers = Object.entries(this.players).sort(function (a, b) {
-			return b[1]['radius'] - a[1]['radius'];
+		Object.keys(players).forEach(function (key) {
+			let toInsert = true;
+			let pos = -1;
+			leaderBoard.alive.forEach(val => { if (toInsert && val.key == key) { toInsert = false; pos = leaderBoard.alive.indexOf(val); } })
+
+			if (!toInsert) {
+				leaderBoard.alive.splice(pos, 1);
+				console.log('removed');
+			}
+			if (players[key]['life'] == 1) {
+				leaderBoard.alive.push({
+					key: key,
+					value: players[key],
+				})
+			}
+		})
+		// this.sortedPlayers=this.alive.
+		this.alive.sort(function (a, b) {
+			return b.value['score'] - a.value['score'];
 		});
 	}
 	fillLeaderBoard(cx, cy) {
@@ -96,17 +111,17 @@ class LeaderBoard {
 		let i;
 		let disp = 1;
 		textSize(20);
-		for (i = 0; y + 20 < cy + (height / 2) && i < this.sortedPlayers.length; i++) {
-			let player = this.sortedPlayers[i][1];
+		for (i = 0; y + 20 < cy + (height / 2) && i < this.alive.length; i++) {
+			// let player = this.sortedPlayers[i][1];
 			fill(200, 200, 200);
-			if (this.sortedPlayers[i][0] == currentKey) {
+			if (this.alive[i].key == currentKey) {
 				disp = 0;
 				fill(255, 255, 255);
 			}
 			textAlign(LEFT, CENTER);
-			text(player['name'], x, y);
+			text(this.alive[i].value['name'], x, y);
 			textAlign(RIGHT, CENTER);
-			text(player['score'], x - 50 + (width / 5), y);
+			text(this.alive[i].value['score'], x - 50 + (width / 5), y);
 			y = y + 25;
 		}
 	}
@@ -131,6 +146,7 @@ var currentKey;
 var currentName;
 const START = 1, ALIVE = 2, DEAD = 3;
 var gameState = START;
+leaderBoard = new LeaderBoard()
 
 function preload() {
 	txtFont = loadFont('assets/inconsolata.ttf')
@@ -201,7 +217,6 @@ function draw() {
 	// console.log(windowHeight)
 
 
-	leaderBoard = new LeaderBoard(players)
 	// frameRate(1);
 	if (gameState != START) {
 
@@ -225,7 +240,7 @@ function draw() {
 			}
 			//add offset boundary 
 			//we have to coordinate offsets for all
-			leaderBoard.updatePlayer(players);
+			// leaderBoard.updatePlayer();
 			leaderBoard.sortPlayers();
 			leaderBoard.draw();
 
