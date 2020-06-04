@@ -60,7 +60,7 @@ class Dot {
 		if (this.life == 1) {
 			fill(255, 0, 0)
 			if (DEBUG) {
-				this.drawSize(cx, cy+15)
+				this.drawSize(cx, cy + 15)
 			}
 		} else
 			fill(255);
@@ -89,15 +89,20 @@ class LeaderBoard {
 			return b[1]['radius'] - a[1]['radius'];
 		});
 	}
-	fillLeaderBoard(x, y) {
+	fillLeaderBoard(cx, cy) {
 		// console.log(this.sortedPlayers[0][1])
-		y = y + 50;
-		x = x + 25;
-		var i;
-		for (i = 0; i < this.sortedPlayers.length; i++) {
-			let player = this.sortedPlayers[i][1]
-			textSize(20);
+		let y = cy + 50;
+		let x = cx + 25;
+		let i;
+		let disp = 1;
+		textSize(20);
+		for (i = 0; y + 20 < cy + (height / 2) && i < this.sortedPlayers.length; i++) {
+			let player = this.sortedPlayers[i][1];
 			fill(200, 200, 200);
+			if (this.sortedPlayers[i][0] == currentKey) {
+				disp = 0;
+				fill(255, 255, 255);
+			}
 			textAlign(LEFT, CENTER);
 			text(player['name'], x, y);
 			textAlign(RIGHT, CENTER);
