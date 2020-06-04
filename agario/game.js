@@ -84,20 +84,8 @@ class LeaderBoard {
 		this.alive = [];
 	}
 	sortPlayers() {
+		this.alive = [];
 		Object.keys(players).forEach(function (key) {
-			let toInsert = true;
-			let pos = -1;
-			leaderBoard.alive.forEach(val => {
-				if (toInsert && val.key == key) {
-					toInsert = false;
-					pos = leaderBoard.alive.indexOf(val);
-				}
-			});
-
-			if (!toInsert) {
-				leaderBoard.alive.splice(pos, 1);
-				// console.log('removed');
-			}
 			if (players[key]['life'] == 1) {
 				leaderBoard.alive.push({
 					key: key,
