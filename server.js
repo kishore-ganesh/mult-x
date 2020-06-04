@@ -3,14 +3,14 @@ var app = express();
 var server = require('http').Server(app)
 var io = require('socket.io')(server);
 
-app.use('/', express.static("./agario"));
+app.use('/', express.static("./multx"));
 
 
 let players = {};
 let playerSockets = [];
 let playerCount = 0;
 let food = [];
-const BOUND = 5;
+const BOUND = 40;
 
 function createRandomFood() {
     let x = Math.random() * 4000 - 2000 // -2000 to 2000
@@ -34,16 +34,11 @@ function sendPlayersToEveryone() {
 
 setInterval(() => {
     if (food.length < 500) {
-        // console.log("CHANGE");
-        // console.log(food.length)
         for (let i = 0; i < 10, food.length <= 500; i++) {
             createRandomFood()
         }
-
         io.emit("food", { food: food })
     }
-
-
 }, 2000)
 
 
@@ -52,7 +47,7 @@ function dist(x1, y1, x2, y2) {
 }
 
 function isPlayerColliding(key, otherPlayer, i) {
-    console.log("COLL");
+    // console.log("COLL");
     if (otherPlayer.life == 1 && players[key].life == 1) {
         let player = players[key];
         let d = dist(otherPlayer.realx, otherPlayer.realy, players[key].realx, players[key].realy)
@@ -64,19 +59,10 @@ function isPlayerColliding(key, otherPlayer, i) {
             return true;
 
         }
-
         return false;
-
-        // else if(d<=this.radius/2&&otherPlayer.radius>this.radius-10){
-
-        // 	this.life=0;
-        // 	otherPlayer.radius+=this.radius*0.3;
-        // 	updatePlayer(this, currentKey);
-
-
     }
 }
-
+// let oldmx = 0, oldmy = 0;
 function updatePlayer(io, key, data) {
     let player = players[key];
     let mx = data.mouseX - data.x;
@@ -84,33 +70,24 @@ function updatePlayer(io, key, data) {
 
     if (mx != 0) mx = (mx > 0 ? 1 : -1)
     if (my != 0) my = (my > 0 ? 1 : -1)
-    // s
-    // console.log(mx + " " + my);
-    // this.dx = mx;
-    // this.dy = my;
-    player.realx += mx * (4*(Math.pow((0.99), players[key].score)) + 2);
-    player.realy += my * (4*(Math.pow((0.99), players[key].score)) + 2);
+    player.realx += mx * (0.5 * (Math.pow((0.99), players[key].score)) + 1.5);
+    player.realy += my * (0.5 * (Math.pow((0.99), players[key].score)) + 1.5);
     let prevx = player.x;
     let prevy = player.y;
-    player.x += mx * 0.5;
-    player.y += mx * 0.5;
-
-
-    player.x = Math.max(-BOUND, player.x);
-    player.x = Math.min(BOUND, player.x);
-    player.y = Math.min(BOUND, player.y);
-    player.y = Math.max(-BOUND, player.y);
-    // player.realx = player.x - offsetx;
-    // player.realy = player.y - offsety;
+    // if (oldmy == my) oldmy = 0;
+    // if (oldmx == mx) oldmx = 0;
+    player.x += (mx * 0.3);// + (oldmx * 0.25);
+    player.y += (mx * 0.3);// + (oldmy * 0.25);
+    // oldmx = mx;
+    // oldmy = my;
+    player.x = Math.max(-BOUND, Math.min(BOUND, player.x));
+    player.y = Math.max(-BOUND, Math.min(BOUND, player.y));
     player.realx += (player.x - prevx);
     player.realy += player.y - prevy;
-    // updatePlayer(t, currentKey);
-    // io.emit('playerUpdate', player);
 }
 
 function checkPlayers(io, key) {
     for (let i in players) {
-
         if (players[i] != undefined && i != key && players[key] != undefined) {
 
             // console.log(players[i].name);
@@ -121,8 +98,6 @@ function checkPlayers(io, key) {
             }
 
         }
-
-
     }
 }
 
@@ -141,33 +116,20 @@ function isColliding(key, prey) {
 }
 
 function checkFood(io, key) {
-    let marked = new Array(food.length);
-    marked.fill(0);
+    let marked = [];
     let player = players[key]
     for (let i = 0; i < food.length; i++) {
         if (player) {
-
             if (isColliding(key, food[i])) {
-                marked[i] = 1;
+                marked.push(i);
             };
         }
     }
-    nfood = [];
-    for (let i = 0; i < food.length; i++) {
-        if (!marked[i]) {
-            nfood.push(food[i])
-        }
-        else {
-            players[key].score += 1;
-            players[key].radius += 9.5*(Math.pow((7/10), players[key].score)) + 0.5;
-        }
+    for (let i = 0; i < marked.length; i++) {
+        food.splice(marked[i] - i, 1);
     }
-    food = nfood;
-    // io.emit("food", {
-    //     food: food
-    // })
-
-    // io.emit("playerUpdated", players[key])
+    players[key].score += marked.length;
+    players[key].radius += (9.5 * (Math.pow((7 / 10), players[key].score)) + 0.5) * marked.length;
 }
 
 //secure client side
@@ -182,8 +144,6 @@ io.on('connection', (socket) => {
 
     socket.emit("food", { food: food });
     socket.on('newplayer', (data) => {
-
-
         // console.log(data)
         let player = data.value;
         player.x = 0;
@@ -206,32 +166,14 @@ io.on('connection', (socket) => {
     })
 
     socket.on('update', (data) => {
-
-
         if (players[data.key]) {
-            // players[data.key].life= data.value.life;
-            // if(players[data.key].ack==1){
-            //     players[data.key].x=data.value.x;
-            //     players[data.key].y=data.value.y;
-            //     players[data.key].radius=data.value.radius;
-            //     players[data.key].realx=data.value.realx;
-            //     players[data.key].realy=data.value.realy;
-            // }
-            // players[data.key].ack = 0;
-
-            // data.name = players[data.key].name 
-            // console.log(players[data.key]);
-            // console.log(data)
             updatePlayer(io, data.key, data);
             checkFood(io, data.key);
             checkPlayers(io, data.key);
-
             // console.log(players);
             io.emit('playerUpdated', players)
             io.emit('food', { food });
         }
-
-
     })
 
     socket.on("eaten", (data) => {
@@ -256,8 +198,6 @@ io.on('connection', (socket) => {
     })
 
     socket.on('disconnect', () => {
-
-
         if (playerSockets[socket.id] != undefined) {
             delete players[socket.id];
         }
@@ -266,8 +206,6 @@ io.on('connection', (socket) => {
     })
 
     //add food update
-
-
 })
 
 server.listen(process.env.PORT || 4000);
