@@ -12,32 +12,9 @@ let playerCount = 0;
 let food = [];
 const BOUND = 5;
 
-
-function makeArray(w, h, val) {
-    var arr = [];
-    for(let i = 0; i < h; i++) {
-        arr[i] = [];
-        for(let j = 0; j < w; j++) {
-            arr[i][j] = val;
-        }
-    }
-    return arr;
-}
-
-let needsCheck = makeArray(4000,4000,'0')
-
-function getCheckIndex(x,y) {
-    if (x > 2000) x = 2000
-    if (x < -2000) x = -2000
-    if (y > 2000) y = 2000
-    if (y < -2000) y = -2000
-    return [x+2000,y+2000]
-}
 function createRandomFood() {
     let x = Math.random() * 4000 - 2000 // -2000 to 2000
     let y = Math.random() * 4000 - 2000
-    let checkIndices = getCheckIndex(x,y)
-    needsCheck[checkIndices[0], checkIndices[1]] = '1'
     food.push({
         x: x,
         y: y
@@ -167,19 +144,10 @@ function checkFood(io, key) {
     let marked = new Array(food.length);
     marked.fill(0);
     let player = players[key]
-    cI = getCheckIndex(player.realx, player.realy)
-    if (needsCheck[cI[0], cI[1]] == '0') {
-        return
-    }
-    // console.log("CHECK")
     for (let i = 0; i < food.length; i++) {
         if (player) {
 
             if (isColliding(key, food[i])) {
-                // food.splice(data.index,1);
-                // console.log("EATEN");
-                chkIdx = getCheckIndex(food[1].x, food[i].y)
-                needsCheck[chkIdx[0], chkIdx[1]] = '0'
                 marked[i] = 1;
             };
         }
